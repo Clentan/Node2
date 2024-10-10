@@ -1,6 +1,6 @@
-import readlineSync from 'readline-sync';
+const readlineSync = require('readline-sync');
 
-console.log("welcome to  quizzes");
+console.log("Welcome to the quiz!");
 console.log("\n");
 
 const username = readlineSync.question("Your Name? ");
@@ -8,9 +8,8 @@ console.log("\n");
 console.log("Welcome to THE QUIZ, " + username + "!");
 
 let score = 0;
-let timeLimit = 1; // Time limit per question in seconds
 
-function quiz(question, answer, callback) {
+function quiz(question, answer, timeLimit, callback) {
   let answered = false;
   const timeout = setTimeout(() => {
     if (!answered) {
@@ -37,24 +36,24 @@ function quiz(question, answer, callback) {
   callback(); // Move to next question after answering
 }
 
-// Questions
+// New quiz questions with varying time limits
 const questions = [
-  { question: "How many Iron Man suits did Tony Stark create in the cinematic universe? ", answer: "21" },
-  { question: "Name of Thor's original hammer? ", answer: "Mjolnir" },
-  { question: "Where was Mjolnir forged? ", answer: "Nidavellir" },
-  { question: "Father of the God of Thunder? ", answer: "Odin" },
-  { question: "Who is the god of mischief? ", answer: "Loki" },
-  { question: "Did you like the quiz? ", answer: "yes" }
+  { question: "Which planet is known as the Red Planet? ", answer: "Mars", timeLimit: 5 },
+  { question: "Who wrote the play 'Romeo and Juliet'? ", answer: "Shakespeare", timeLimit: 4 },
+  { question: "What is the capital of France? ", answer: "Paris", timeLimit: 3 },
+  { question: "What is the largest mammal on Earth? ", answer: "Blue whale", timeLimit: 6 },
+  { question: "Which element's chemical symbol is 'O'? ", answer: "Oxygen", timeLimit: 2 },
+  { question: "Did you enjoy the quiz? ", answer: "yes", timeLimit: 1 }
 ];
 
 // Function to ask each question with a timer
 function askQuestion(index) {
-  if (index < questions.length ) {
+  if (index < questions.length) {
     const currentQ = questions[index];
-    quiz(currentQ.question, currentQ.answer, () => askQuestion(index + 1));
+    quiz(currentQ.question, currentQ.answer, currentQ.timeLimit, () => askQuestion(index + 1));
   } else {
     console.log("Quiz is finished!");
-    console.log("YOUR FINAL SCORE IS: " + score + "/6");
+    console.log("YOUR FINAL SCORE IS: " + score + "/" + questions.length);
   }
 }
 
