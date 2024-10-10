@@ -9,20 +9,43 @@ console.log("Welcome to THE QUIZ, " + username + "!");
 
 let score = 0;
 
+function countdown(seconds, callback) {
+  const interval = setInterval(() => {
+    if (seconds > 0) {
+      process.stdout.write(`Time left: ${seconds} seconds\r`);
+      seconds--;
+    } else {
+      clearInterval(interval);
+      callback(); // Call the quiz question after countdown finishes
+    }
+  }, 1000); // 1-second interval
+}
+
 function quiz(question, answer, timeLimit, callback) {
   let answered = false;
+
   const timeout = setTimeout(() => {
     if (!answered) {
-      console.log("Time's up.....Moving to the next question.");
+      console.log("\nTime's up.....Moving to the next question.");
       console.log("-------------------");
       callback();  // Move to next question
     }
   }, timeLimit * 1000);
 
-  const userAnswer = readlineSync.question(question);
+  // Start the countdown timer while the user is answering
+  countdown(timeLimit, () => {
+    if (!answered) {
+      console.log("\nTime's up.....Moving to the next question.");
+      console.log("-------------------");
+      callback();  // Move to next question
+    }
+  });
+
+  const userAnswer = readlineSync.question(`\n${question}`);
   answered = true;
   clearTimeout(timeout);
 
+  console.log(""); // Move to next line after user answer
   if (userAnswer.toLowerCase() === answer.toLowerCase()) {
     console.log("Correct!");
     score++;
@@ -46,7 +69,7 @@ const questions = [
   { question: "Did you enjoy the quiz? ", answer: "yes", timeLimit: 1 }
 ];
 
-// Function to ask each question with a timer
+// Function to ask each question with a countdown and timer
 function askQuestion(index) {
   if (index < questions.length) {
     const currentQ = questions[index];
