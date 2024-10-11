@@ -82,3 +82,4 @@ function askQuestion(index) {
 
 // Start the quiz
 askQuestion(0);
+
